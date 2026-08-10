@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta de satisfacción · Minecraft Experience CDMX</title>
+<style>
+  :root { color-scheme: light; }
+
+  .viz-root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --surface-2:      #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --track:          #eeede8;
+
+    --series-1: #2a78d6; /* blue */
+    --series-2: #eb6834; /* orange */
+    --series-3: #1baf7a; /* aqua */
+    --series-4: #eda100; /* yellow */
+    --series-5: #e87ba4; /* magenta */
+    --series-6: #008300; /* green */
+    --series-7: #4a3aa7; /* violet */
+    --series-8: #e34948; /* red */
+
+    --seq-100: #cde2fb; --seq-200: #9ec5f4; --seq-300: #6da7ec;
+    --seq-400: #3987e5; --seq-450: #2a78d6; --seq-500: #256abf;
+    --seq-550: #1c5cab; --seq-600: #184f95; --seq-700: #0d366b;
+
+    --good: #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    --good-light: #bfe6bf;
+    --critical-light: #f0bcbc;
+
+    --success-text: #006300;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1: #1a1a19;
+      --surface-2: #0d0d0d;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted: #898781;
+      --gridline: #2c2c2a;
+      --baseline: #383835;
+      --border: rgba(255,255,255,0.10);
+      --track: #262623;
+
+      --series-1: #3987e5;
+      --series-2: #d95926;
+      --series-3: #199e70;
+      --series-4: #c98500;
+      --series-5: #d55181;
+      --series-6: #008300;
+      --series-7: #9085e9;
+      --series-8: #e66767;
+
+      --good: #0ca30c;
+      --warning: #fab219;
+      --serious: #ec835a;
+      --critical: #e66767;
+      --good-light: #1f4a1f;
+      --critical-light: #4a2323;
+
+      --success-text: #0ca30c;
+    }
+  }
+  :root[data-theme="dark"] .viz-root {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --surface-2: #0d0d0d;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --gridline: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --track: #262623;
+
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #008300;
+    --series-7: #9085e9;
+    --series-8: #e66767;
+
+    --good: #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #e66767;
+    --good-light: #1f4a1f;
+    --critical-light: #4a2323;
+
+    --success-text: #0ca30c;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--surface-2);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--text-primary);
+  }
+  .viz-root { background: var(--surface-2); color: var(--text-primary); min-height: 100vh; padding-bottom: 48px; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+  header.top {
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-1);
+    margin-bottom: 28px;
+  }
+  header.top .inner { max-width: 1180px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  header.top h1 { font-size: 26px; margin: 0 0 6px; font-weight: 700; letter-spacing: -0.01em; }
+  header.top .sub { color: var(--text-secondary); font-size: 14.5px; margin: 0 0 4px; }
+  header.top .meta { color: var(--text-muted); font-size: 13px; margin: 0; }
+  header.top .tag {
+    display: inline-block; font-size: 11.5px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase;
+    color: var(--series-1); background: color-mix(in srgb, var(--series-1) 12%, transparent);
+    padding: 3px 9px; border-radius: 20px; margin-bottom: 10px;
+  }
+  #theme-toggle {
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text-secondary);
+    border-radius: 8px; padding: 8px 14px; font-size: 13px; cursor: pointer; white-space: nowrap;
+  }
+  #theme-toggle:hover { color: var(--text-primary); }
+
+  section { margin: 0 0 40px; }
+  .section-head { margin-bottom: 16px; }
+  .section-head h2 { font-size: 19px; margin: 0 0 4px; font-weight: 700; }
+  .section-head p { margin: 0; color: var(--text-secondary); font-size: 13.5px; max-width: 760px; }
+  .section-head .n-badge { color: var(--text-muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+    padding: 22px 24px;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-2col-uneven { display: grid; grid-template-columns: 1.15fr 1fr; gap: 20px; }
+  @media (max-width: 860px) { .grid-2, .grid-2col-uneven { grid-template-columns: 1fr; } }
+
+  /* KPI row */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 860px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
+  .kpi {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .kpi .label { font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .02em; }
+  .kpi .value { font-size: 34px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; }
+  .kpi .value .unit { font-size: 16px; font-weight: 600; color: var(--text-secondary); margin-left: 2px; }
+  .kpi .foot { margin-top: 8px; font-size: 12.5px; color: var(--text-secondary); }
+  .kpi .foot b { color: var(--text-primary); }
+
+  /* generic bar list */
+  .bar-row { display: grid; grid-template-columns: 210px 1fr 76px; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .bar-row .label { font-size: 13px; color: var(--text-primary); line-height: 1.25; }
+  .bar-row .track { position: relative; height: 22px; background: var(--track); border-radius: 4px; overflow: hidden; }
+  .bar-row .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+  .bar-row .val { font-size: 13px; font-variant-numeric: tabular-nums; color: var(--text-secondary); text-align: right; }
+  .bar-row .val b { color: var(--text-primary); font-weight: 700; }
+
+  /* NPS distribution histogram */
+  .hist { display: flex; align-items: flex-end; gap: 6px; height: 150px; margin-top: 6px; }
+  .hist .col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .hist .col .bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 2px; }
+  .hist .col .n { font-size: 10.5px; color: var(--text-muted); margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+  .hist .col .x { font-size: 11.5px; color: var(--text-secondary); margin-top: 6px; font-variant-numeric: tabular-nums; }
+
+  /* donut */
+  .donut-wrap { display: flex; align-items: center; gap: 22px; }
+  .legend-list { display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 9px; font-size: 13.5px; }
+  .legend-item .sw { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+  .legend-item .lv { font-variant-numeric: tabular-nums; color: var(--text-secondary); margin-left: 4px; }
+  .legend-item b { color: var(--text-primary); }
+
+  /* stacked bar (NPS by group) */
+  .stack-row { margin-bottom: 18px; }
+  .stack-row .top-line { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .stack-row .grp { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+  .stack-row .n-note { font-size: 12px; color: var(--text-muted); margin-left: 6px; font-weight: 400; }
+  .stack-row .score { font-size: 13.5px; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .stack-row .score b { color: var(--text-primary); font-size: 15px; }
+  .stack-track { display: flex; height: 26px; border-radius: 5px; overflow: hidden; background: var(--track); }
+  .stack-seg { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; }
+  .stack-seg.tiny { color: transparent; }
+
+  /* diverging stacked (value for money) */
+  .div-track { display: flex; height: 24px; border-radius: 5px; overflow: hidden; background: var(--track); }
+  .div-seg { display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 700; }
+
+  /* heatmap matrix */
+  table.matrix { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12.5px; }
+  table.matrix th, table.matrix td { padding: 8px 7px; text-align: center; white-space: nowrap; }
+  table.matrix thead th { color: var(--text-secondary); font-weight: 600; font-size: 11.5px; border-bottom: 1px solid var(--gridline); }
+  table.matrix tbody th { text-align: left; color: var(--text-primary); font-weight: 600; padding-right: 12px; }
+  table.matrix tbody th .n { display:block; font-weight: 400; color: var(--text-muted); font-size: 10.5px; }
+  table.matrix td { font-variant-numeric: tabular-nums; color: var(--text-primary); border-radius: 4px; }
+  table.matrix td.empty { color: var(--text-muted); }
+  .matrix-wrap { overflow-x: auto; }
+  .matrix-note { margin-top: 12px; font-size: 12px; color: var(--text-muted); }
+
+  details.data-table { margin-top: 14px; }
+  details.data-table summary { cursor: pointer; font-size: 12.5px; color: var(--series-1); font-weight: 600; user-select: none; }
+  details.data-table summary:hover { text-decoration: underline; }
+  details.data-table .dt-inner { margin-top: 10px; }
+
+  table.plain { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.plain th, table.plain td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--gridline); }
+  table.plain th { color: var(--text-muted); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .02em; }
+  table.plain td { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+  .flag { font-size: 11px; color: var(--warning); font-weight: 700; margin-left: 4px; }
+  .small-n { opacity: 0.72; }
+
+  .card-title { font-size: 14px; font-weight: 700; margin: 0 0 14px; }
+  .card-subtitle { font-size: 12px; color: var(--text-muted); margin: -10px 0 16px; }
+
+  /* theme cards */
+  .theme-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 860px) { .theme-cols { grid-template-columns: 1fr; } }
+  .theme-col-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+  .theme-col-head h3 { font-size: 15px; margin: 0; font-weight: 700; }
+  .theme-col-head span { font-size: 12px; color: var(--text-muted); }
+  .theme-card {
+    border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;
+    background: var(--surface-2);
+  }
+  .theme-card .t-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 10px; }
+  .theme-card .t-name { font-size: 13.5px; font-weight: 700; color: var(--text-primary); }
+  .theme-card .t-pct { font-size: 13px; font-weight: 700; color: var(--series-1); font-variant-numeric: tabular-nums; white-space:nowrap; }
+  .theme-card .t-track { height: 6px; border-radius: 3px; background: var(--track); overflow: hidden; margin-bottom: 10px; }
+  .theme-card .t-fill { height: 100%; border-radius: 3px; background: var(--series-1); }
+  .theme-card .quote { font-size: 12.5px; color: var(--text-secondary); font-style: italic; margin: 4px 0; padding-left: 10px; border-left: 2px solid var(--border); }
+
+  footer.foot {
+    margin-top: 12px; padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text-muted); line-height: 1.6;
+  }
+  footer.foot p { margin: 0 0 6px; max-width: 900px; }
+</style>
+</head>
+<body>
+<div class="viz-root">
+
+  <header class="top">
+    <div class="inner">
+      <div>
+        <div class="tag">Encuesta post-experiencia</div>
+        <h1>Minecraft Experience: Villager Rescue — CDMX</h1>
+        <p class="sub">Resultados de la encuesta de satisfacción del cliente (PES) · Forum Buenavista, Ciudad de México</p>
+        <p class="meta" id="meta-line"></p>
+      </div>
+      <button id="theme-toggle" onclick="toggleTheme()">🌙 Modo oscuro</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- KPI ROW -->
+    <section class="kpi-row" id="kpi-row"></section>
+
+    <!-- NPS BREAKDOWN -->
+    <section id="sec-nps">
+      <div class="section-head">
+        <h2>Desglose del NPS</h2>
+        <p>¿Recomendarías la experiencia a tus amigos? (escala 0–10). Promotores 9–10 · Pasivos 7–8 · Detractores 0–6.</p>
+      </div>
+      <div class="grid-2col-uneven">
+        <div class="card">
+          <div class="card-title">Distribución de respuestas (0–10)</div>
+          <div class="hist" id="hist-nps"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Promotores · Pasivos · Detractores</div>
+          <div class="donut-wrap">
+            <svg id="donut-nps" width="150" height="150" viewBox="0 0 150 150"></svg>
+            <div class="legend-list" id="legend-nps"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARKETING CHANNEL -->
+    <section id="sec-channel">
+      <div class="section-head">
+        <h2>¿Cómo te enteraste de esta experiencia?</h2>
+        <p>Pregunta de selección múltiple: los porcentajes son sobre el total de personas que respondieron y <b>no suman 100%</b>.</p>
+      </div>
+      <div class="card">
+        <div id="bars-channel"></div>
+      </div>
+    </section>
+
+    <!-- CHANNEL BY AGE -->
+    <section id="sec-channel-age">
+      <div class="section-head">
+        <h2>Canal de marketing por edad</h2>
+        <p>Porcentaje de personas de cada grupo de edad que mencionó cada canal (selección múltiple, no suma 100% por fila).</p>
+      </div>
+      <div class="card">
+        <div class="matrix-wrap">
+          <table class="matrix" id="matrix-channel-age"></table>
+        </div>
+        <p class="matrix-note">⚠ Los grupos con muy pocas respuestas (n &lt; 10) son direccionales, no concluyentes.</p>
+        <details class="data-table">
+          <summary>Ver tabla de datos completa (conteos)</summary>
+          <div class="dt-inner"><table class="plain" id="table-channel-age"></table></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- WITH WHOM -->
+    <section id="sec-with">
+      <div class="section-head">
+        <h2>¿Asististe a la experiencia con alguien?</h2>
+        <p>Pregunta de selección múltiple: los porcentajes son sobre el total de personas que respondieron y <b>no suman 100%</b>.</p>
+      </div>
+      <div class="card">
+        <div id="bars-with"></div>
+      </div>
+    </section>
+
+    <!-- NPS BY WITH WHOM -->
+    <section id="sec-nps-with">
+      <div class="section-head">
+        <h2>NPS según con quién asistieron</h2>
+        <p>Composición de promotores / pasivos / detractores dentro de cada grupo de acompañantes (ordenado por NPS).</p>
+      </div>
+      <div class="card" id="stacks-nps-with"></div>
+    </section>
+
+    <!-- VALUE FOR MONEY BY WITH WHOM -->
+    <section id="sec-value-with">
+      <div class="section-head">
+        <h2>Relación calidad-precio según con quién asistieron</h2>
+        <p>Distribución de la calificación de calidad-precio del boleto (1–5) dentro de cada grupo de acompañantes.</p>
+      </div>
+      <div class="card" id="stacks-value-with"></div>
+    </section>
+
+    <!-- THEMATIC SUMMARIES -->
+    <section id="sec-themes">
+      <div class="section-head">
+        <h2>Resumen temático de las preguntas abiertas</h2>
+        <p>Temas identificados a partir de las respuestas de texto libre, con el % de comentarios que menciona cada tema y ejemplos representativos.</p>
+      </div>
+      <div class="card">
+        <div class="theme-cols">
+          <div>
+            <div class="theme-col-head">
+              <h3>💚 ¿Qué fue lo que más te gustó?</h3>
+              <span id="liked-n"></span>
+            </div>
+            <div id="themes-liked"></div>
+          </div>
+          <div>
+            <div class="theme-col-head">
+              <h3>🛠️ ¿Qué crees que necesita más mejoras?</h3>
+              <span id="improve-n"></span>
+            </div>
+            <div id="themes-improve"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p><b>Metodología:</b> NPS = 100 × (% promotores − % detractores), calculado sobre respuestas válidas a la pregunta de recomendación. Promotores = calificación 9–10, pasivos = 7–8, detractores = 0–6. Las preguntas de "canal de marketing" y "con quién asististe" permiten selección múltiple, por lo que sus porcentajes se calculan sobre el número de personas que respondieron esa pregunta y no suman 100%. Los "otros" agrupan respuestas de texto libre fuera de las opciones fijas del formulario.</p>
+      <p>Dashboard generado a partir del export de resultados de la encuesta PES (c145 / ct29 / pg842 / p575536). Fecha de generación: <span id="gen-date"></span>.</p>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+const DATA = {"meta": {"n_total": 288, "experience": "Minecraft: The Official Experience - CDMX"}, "nps": {"n": 285, "mean": 8.91, "median": 10.0, "promoters": 204, "passives": 60, "detractors": 21, "promoters_pct": 71.6, "passives_pct": 21.1, "detractors_pct": 7.4, "nps_score": 64.2, "distribution": {"0": 4, "1": 0, "2": 1, "3": 1, "4": 4, "5": 9, "6": 2, "7": 13, "8": 47, "9": 46, "10": 158}}, "channel": {"n": 203, "counts": {"Facebook": 86, "TikTok": 46, "Instagram": 41, "Medios digitales": 35, "Google / Búsqueda en internet": 14, "De boca en boca": 11, "Espectaculares / Carteles": 11, "Otro": 9, "YouTube": 3}, "pct": {"TikTok": 22.7, "Otro": 4.4, "Facebook": 42.4, "Instagram": 20.2, "Google / Búsqueda en internet": 6.9, "De boca en boca": 5.4, "Medios digitales": 17.2, "Espectaculares / Carteles": 5.4, "YouTube": 1.5}, "otro_examples": ["Acuario Michin", "Fever", "Me dijo mi pareja", "Minecraft", "Por mi hermano", "Prensa escrita", "YouTuber", "fever"]}, "age": {"<13": 11, "13-17": 12, "18-24": 40, "25-34": 57, "35-44": 103, "45-54": 55, "55-64": 7, "65-76": 2, "Preferiría no decirlo": 1}, "channel_by_age": {"<13": {"n": 7, "pct": {"Facebook": 28.6, "TikTok": 42.9, "Instagram": 28.6, "Medios digitales": 14.3, "Google / Búsqueda en internet": 0.0, "De boca en boca": 0.0, "Espectaculares / Carteles": 0.0, "YouTube": 0.0, "Otro": 0.0}, "counts": {"Facebook": 2, "TikTok": 3, "Instagram": 2, "Medios digitales": 1, "Google / Búsqueda en internet": 0, "De boca en boca": 0, "Espectaculares / Carteles": 0, "YouTube": 0, "Otro": 0}}, "13-17": {"n": 6, "pct": {"Facebook": 0.0, "TikTok": 50.0, "Instagram": 33.3, "Medios digitales": 16.7, "Google / Búsqueda en internet": 0.0, "De boca en boca": 0.0, "Espectaculares / Carteles": 0.0, "YouTube": 0.0, "Otro": 16.7}, "counts": {"Facebook": 0, "TikTok": 3, "Instagram": 2, "Medios digitales": 1, "Google / Búsqueda en internet": 0, "De boca en boca": 0, "Espectaculares / Carteles": 0, "YouTube": 0, "Otro": 1}}, "18-24": {"n": 30, "pct": {"Facebook": 26.7, "TikTok": 43.3, "Instagram": 33.3, "Medios digitales": 23.3, "Google / Búsqueda en internet": 6.7, "De boca en boca": 10.0, "Espectaculares / Carteles": 13.3, "YouTube": 3.3, "Otro": 0.0}, "counts": {"Facebook": 8, "TikTok": 13, "Instagram": 10, "Medios digitales": 7, "Google / Búsqueda en internet": 2, "De boca en boca": 3, "Espectaculares / Carteles": 4, "YouTube": 1, "Otro": 0}}, "25-34": {"n": 35, "pct": {"Facebook": 42.9, "TikTok": 28.6, "Instagram": 28.6, "Medios digitales": 17.1, "Google / Búsqueda en internet": 5.7, "De boca en boca": 5.7, "Espectaculares / Carteles": 8.6, "YouTube": 2.9, "Otro": 11.4}, "counts": {"Facebook": 15, "TikTok": 10, "Instagram": 10, "Medios digitales": 6, "Google / Búsqueda en internet": 2, "De boca en boca": 2, "Espectaculares / Carteles": 3, "YouTube": 1, "Otro": 4}}, "35-44": {"n": 75, "pct": {"Facebook": 53.3, "TikTok": 18.7, "Instagram": 13.3, "Medios digitales": 10.7, "Google / Búsqueda en internet": 9.3, "De boca en boca": 0.0, "Espectaculares / Carteles": 1.3, "YouTube": 1.3, "Otro": 4.0}, "counts": {"Facebook": 40, "TikTok": 14, "Instagram": 10, "Medios digitales": 8, "Google / Búsqueda en internet": 7, "De boca en boca": 0, "Espectaculares / Carteles": 1, "YouTube": 1, "Otro": 3}}, "45-54": {"n": 41, "pct": {"Facebook": 36.6, "TikTok": 7.3, "Instagram": 14.6, "Medios digitales": 26.8, "Google / Búsqueda en internet": 7.3, "De boca en boca": 12.2, "Espectaculares / Carteles": 4.9, "YouTube": 0.0, "Otro": 2.4}, "counts": {"Facebook": 15, "TikTok": 3, "Instagram": 6, "Medios digitales": 11, "Google / Búsqueda en internet": 3, "De boca en boca": 5, "Espectaculares / Carteles": 2, "YouTube": 0, "Otro": 1}}, "55-64": {"n": 7, "pct": {"Facebook": 71.4, "TikTok": 0.0, "Instagram": 14.3, "Medios digitales": 14.3, "Google / Búsqueda en internet": 0.0, "De boca en boca": 14.3, "Espectaculares / Carteles": 0.0, "YouTube": 0.0, "Otro": 0.0}, "counts": {"Facebook": 5, "TikTok": 0, "Instagram": 1, "Medios digitales": 1, "Google / Búsqueda en internet": 0, "De boca en boca": 1, "Espectaculares / Carteles": 0, "YouTube": 0, "Otro": 0}}, "65-76": {"n": 1, "pct": {"Facebook": 100.0, "TikTok": 0.0, "Instagram": 0.0, "Medios digitales": 0.0, "Google / Búsqueda en internet": 0.0, "De boca en boca": 0.0, "Espectaculares / Carteles": 0.0, "YouTube": 0.0, "Otro": 0.0}, "counts": {"Facebook": 1, "TikTok": 0, "Instagram": 0, "Medios digitales": 0, "Google / Búsqueda en internet": 0, "De boca en boca": 0, "Espectaculares / Carteles": 0, "YouTube": 0, "Otro": 0}}, "Preferiría no decirlo": {"n": 1, "pct": {"Facebook": 0.0, "TikTok": 0.0, "Instagram": 0.0, "Medios digitales": 0.0, "Google / Búsqueda en internet": 0.0, "De boca en boca": 0.0, "Espectaculares / Carteles": 100.0, "YouTube": 0.0, "Otro": 0.0}, "counts": {"Facebook": 0, "TikTok": 0, "Instagram": 0, "Medios digitales": 0, "Google / Búsqueda en internet": 0, "De boca en boca": 0, "Espectaculares / Carteles": 1, "YouTube": 0, "Otro": 0}}}, "with_whom": {"n": 284, "counts": {"Niños (menos de 18 años)": 199, "Familia (adultos)": 88, "Pareja / Cónyuge": 62, "Amigo(s)": 30, "Otro": 4, "Fui solo/a": 4}, "pct": {"Niños (menos de 18 años)": 70.1, "Pareja / Cónyuge": 21.8, "Familia (adultos)": 31.0, "Amigo(s)": 10.6, "Otro": 1.4, "Fui solo/a": 1.4}, "otro_examples": ["Familia e hijo", "Grupo de turistas", "Mama e hijo", "Primo"]}, "nps_by_with": {"Niños (menos de 18 años)": {"n": 197, "mean": 8.77, "nps_score": 61.4, "promoters_pct": 71.6, "passives_pct": 18.3, "detractors_pct": 10.2}, "Familia (adultos)": {"n": 87, "mean": 9.16, "nps_score": 71.3, "promoters_pct": 77.0, "passives_pct": 17.2, "detractors_pct": 5.7}, "Pareja / Cónyuge": {"n": 62, "mean": 9.15, "nps_score": 69.4, "promoters_pct": 75.8, "passives_pct": 17.7, "detractors_pct": 6.5}, "Amigo(s)": {"n": 30, "mean": 8.9, "nps_score": 60.0, "promoters_pct": 63.3, "passives_pct": 33.3, "detractors_pct": 3.3}, "Fui solo/a": {"n": 3, "mean": 9.33, "nps_score": 66.7, "promoters_pct": 66.7, "passives_pct": 33.3, "detractors_pct": 0.0}, "Otro": {"n": 4, "mean": 10.0, "nps_score": 100.0, "promoters_pct": 100.0, "passives_pct": 0.0, "detractors_pct": 0.0}}, "value_by_with": {"Niños (menos de 18 años)": {"n": 173, "mean": 3.99, "top2box_pct": 69.9, "distribution": {"1": 4, "2": 12, "3": 36, "4": 51, "5": 70}}, "Familia (adultos)": {"n": 75, "mean": 4.31, "top2box_pct": 78.7, "distribution": {"1": 0, "2": 1, "3": 15, "4": 19, "5": 40}}, "Pareja / Cónyuge": {"n": 51, "mean": 4.12, "top2box_pct": 66.7, "distribution": {"1": 0, "2": 3, "3": 14, "4": 8, "5": 26}}, "Amigo(s)": {"n": 25, "mean": 4.04, "top2box_pct": 76.0, "distribution": {"1": 0, "2": 1, "3": 5, "4": 11, "5": 8}}, "Fui solo/a": {"n": 4, "mean": 4.25, "top2box_pct": 100.0, "distribution": {"1": 0, "2": 0, "3": 0, "4": 3, "5": 1}}, "Otro": {"n": 3, "mean": 3.67, "top2box_pct": 66.7, "distribution": {"1": 0, "2": 1, "3": 0, "4": 1, "5": 1}}}, "value_overall": {"n": 249, "mean": 4.06, "median": 4.0, "top2box_pct": 73.1, "distribution": {"1": 4, "2": 14, "3": 49, "4": 77, "5": 105}}, "with_fixed_order": ["Niños (menos de 18 años)", "Familia (adultos)", "Pareja / Cónyuge", "Amigo(s)", "Fui solo/a", "Otro"], "channel_fixed_order": ["Facebook", "TikTok", "Instagram", "Medios digitales", "Google / Búsqueda en internet", "De boca en boca", "Espectaculares / Carteles", "YouTube", "Otro"], "age_order": ["<13", "13-17", "18-24", "25-34", "35-44", "45-54", "55-64", "65-76", "Preferiría no decirlo"]};
+const THEMES = {"liked_n": 236, "liked": [{"name": "Interactividad y tecnología", "count": 54, "quotes": ["Lo interactivo y bien hecho que estaba, que podías tocar todo", "La interacción con el juego y las pantallas"]}, {"name": "Juegos y retos del recorrido", "count": 40, "quotes": ["La actividad de lanzar bolas de nieve y saltar sobre lava", "Las interacciones disponibles con el orbe y el Nether"]}, {"name": "Diversión en familia / para los niños", "count": 31, "quotes": ["Ver a mi hijo feliz, el guía excelente", "La alegría y diversión de los niños"]}, {"name": "Atención del personal y guías", "count": 26, "quotes": ["La atención del personal, muy buena", "El guía, muy amable y divertido"]}, {"name": "Ambientación y diseño inmersivo", "count": 24, "quotes": ["La ambientación y la atención en el lugar", "Que fuera una experiencia inmersiva, con una ambientación muy cuidada"]}], "improve_n": 262, "improve": [{"name": "Duración de la experiencia", "count": 61, "quotes": ["Decía que duraba 1 hora y duró menos de 40 minutos", "Un poco más de tiempo en cada sala y actividad"]}, {"name": "Recorrido, salas y organización", "count": 41, "quotes": ["Tiempo de espera muy largo y filas", "Que existan más salas, se sintió corto el recorrido"]}, {"name": "Precio y tienda de regalos", "count": 38, "quotes": ["Es muy caro el precio para el tiempo que dura", "Hacer más visibles los precios de la tienda de regalos"]}, {"name": "Momento dedicado a tomar fotos", "count": 18, "quotes": ["Más tiempo para tomar fotos sin que nos apresuraran", "Dejar un momento dedicado para tomarse fotos"]}, {"name": "Clima interior / ventilación", "count": 10, "quotes": ["Un poco de aire acondicionado, estaba bien caliente", "Mayor ventilación, hacía mucho calor dentro"]}]};
+
+function fmt1(n) { return (Math.round(n*10)/10).toString().replace('.', ','); }
+function fmtPct(n) { return Math.round(n) + '%'; }
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const cur = html.getAttribute('data-theme');
+  const btn = document.getElementById('theme-toggle');
+  if (cur === 'dark') { html.setAttribute('data-theme','light'); btn.textContent = '🌙 Modo oscuro'; }
+  else { html.setAttribute('data-theme','dark'); btn.textContent = '☀️ Modo claro'; }
+}
+
+document.getElementById('gen-date').textContent = new Date().toISOString ? '' : '';
+</script>
+<script>
+document.getElementById('gen-date').textContent = "10 de agosto de 2026";
+document.getElementById('meta-line').textContent =
+  DATA.meta.n_total + ' respuestas totales · NPS pregunta respondida por ' + DATA.nps.n + ' personas';
+
+// ---------- KPI ROW ----------
+const kpiRow = document.getElementById('kpi-row');
+const kpis = [
+  { label: 'NPS', value: fmt1(DATA.nps.nps_score), unit: '', foot: '<b>' + fmtPct(DATA.nps.promoters_pct) + '</b> promotores · ' + fmtPct(DATA.nps.detractors_pct) + ' detractores' },
+  { label: 'Recomendarían la experiencia', value: fmtPct(DATA.nps.promoters_pct + DATA.nps.passives_pct), unit: '', foot: 'Promotores + pasivos (nota ≥ 7 de 10)' },
+  { label: 'Calidad-precio media', value: fmt1(DATA.value_overall.mean), unit: '/ 5', foot: '<b>' + fmtPct(DATA.value_overall.top2box_pct) + '</b> calificó 4 o 5' },
+  { label: 'Respuestas totales', value: DATA.meta.n_total, unit: '', foot: 'Minecraft Experience CDMX' },
+];
+kpiRow.innerHTML = kpis.map(k => `
+  <div class="kpi">
+    <div class="label">${k.label}</div>
+    <div class="value">${k.value}<span class="unit">${k.unit}</span></div>
+    <div class="foot">${k.foot}</div>
+  </div>
+`).join('');
+
+// ---------- NPS HISTOGRAM ----------
+const hist = document.getElementById('hist-nps');
+const maxCount = Math.max(...Object.values(DATA.nps.distribution));
+let histHtml = '';
+for (let i = 0; i <= 10; i++) {
+  const c = DATA.nps.distribution[i] || 0;
+  const h = maxCount ? Math.max(2, Math.round((c / maxCount) * 100)) : 2;
+  const color = i <= 6 ? 'var(--critical)' : (i <= 8 ? 'var(--text-muted)' : 'var(--good)');
+  histHtml += `<div class="col">
+      <div class="n">${c}</div>
+      <div class="bar" style="height:${h}%; background:${color};"></div>
+      <div class="x">${i}</div>
+    </div>`;
+}
+hist.innerHTML = histHtml;
+
+// ---------- NPS DONUT ----------
+function donut(svgId, segments, size, thickness) {
+  const svg = document.getElementById(svgId);
+  const r = (size / 2) - thickness / 2 - 2;
+  const cx = size / 2, cy = size / 2;
+  const circ = 2 * Math.PI * r;
+  let offset = 0;
+  let html = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--track)" stroke-width="${thickness}"/>`;
+  segments.forEach(seg => {
+    const len = (seg.pct / 100) * circ;
+    html += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${seg.color}" stroke-width="${thickness}"
+      stroke-dasharray="${len} ${circ - len}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})" stroke-linecap="butt"/>`;
+    offset += len;
+  });
+  svg.innerHTML = html;
+}
+const npsSegs = [
+  { label: 'Promotores (9–10)', pct: DATA.nps.promoters_pct, color: 'var(--good)', n: DATA.nps.promoters },
+  { label: 'Pasivos (7–8)', pct: DATA.nps.passives_pct, color: 'var(--text-muted)', n: DATA.nps.passives },
+  { label: 'Detractores (0–6)', pct: DATA.nps.detractors_pct, color: 'var(--critical)', n: DATA.nps.detractors },
+];
+donut('donut-nps', npsSegs.map(s => ({ pct: s.pct, color: getComputedColor(s.color) })), 150, 22);
+function getComputedColor(varStr) {
+  // resolve css var to actual computed value so SVG stroke renders correctly
+  // (must be appended inside .viz-root so the custom properties are in scope)
+  const host = document.querySelector('.viz-root');
+  const tmp = document.createElement('div');
+  tmp.style.color = varStr;
+  host.appendChild(tmp);
+  const c = getComputedStyle(tmp).color;
+  host.removeChild(tmp);
+  return c;
+}
+document.getElementById('legend-nps').innerHTML = npsSegs.map(s => `
+  <div class="legend-item"><span class="sw" style="background:${s.color}"></span> ${s.label} <span class="lv"><b>${fmtPct(s.pct)}</b> (n=${s.n})</span></div>
+`).join('') + `<div class="legend-item" style="margin-top:4px; padding-top:10px; border-top:1px solid var(--border);">
+  <span>NPS score</span><span class="lv" style="margin-left:auto"><b style="font-size:18px">${fmt1(DATA.nps.nps_score)}</b></span></div>`;
+
+// ---------- GENERIC BAR LIST ----------
+function renderBars(containerId, entries, colorVar, note) {
+  const el = document.getElementById(containerId);
+  const max = Math.max(...entries.map(e => e.pct));
+  el.innerHTML = entries.map(e => `
+    <div class="bar-row">
+      <div class="label" title="${e.label}">${e.label}</div>
+      <div class="track"><div class="fill" style="width:${(e.pct/max*100).toFixed(1)}%; background:${colorVar};"></div></div>
+      <div class="val"><b>${fmtPct(e.pct)}</b> <span style="color:var(--text-muted)">(n=${e.n})</span></div>
+    </div>
+  `).join('');
+}
+
+const channelEntries = DATA.channel_fixed_order
+  .map(c => ({ label: c, pct: DATA.channel.pct[c] || 0, n: DATA.channel.counts[c] || 0 }))
+  .sort((a,b) => b.pct - a.pct);
+renderBars('bars-channel', channelEntries, 'var(--series-1)');
+
+const withEntries = DATA.with_fixed_order
+  .map(c => ({ label: c, pct: DATA.with_whom.pct[c] || 0, n: DATA.with_whom.counts[c] || 0 }))
+  .sort((a,b) => b.pct - a.pct);
+renderBars('bars-with', withEntries, 'var(--series-1)');
+
+// ---------- CHANNEL BY AGE MATRIX ----------
+const ageOrderFiltered = DATA.age_order.filter(a => DATA.age[a] > 0);
+const channels = DATA.channel_fixed_order;
+function seqColor(pct) {
+  // 0-100 -> light to dark blue steps
+  const steps = ['var(--seq-100)','var(--seq-200)','var(--seq-300)','var(--seq-400)','var(--seq-500)','var(--seq-600)','var(--seq-700)'];
+  if (pct <= 0) return null;
+  const idx = Math.min(steps.length - 1, Math.floor(pct / 15));
+  return steps[idx];
+}
+function textOnSeq(pct) { return pct >= 45 ? '#ffffff' : 'var(--text-primary)'; }
+
+let matrixHtml = '<thead><tr><th>Edad</th>' + channels.map(c => `<th>${c.replace(' / ', '<br>/ ').replace('Google','Google').replace(' en internet','')}</th>`).join('') + '</tr></thead><tbody>';
+ageOrderFiltered.forEach(age => {
+  const row = DATA.channel_by_age[age];
+  matrixHtml += `<tr><th>${age}<span class="n">n=${row.n}</span></th>`;
+  channels.forEach(c => {
+    const pct = row.pct[c] || 0;
+    const bg = seqColor(pct);
+    if (!bg) {
+      matrixHtml += `<td class="empty">–</td>`;
+    } else {
+      matrixHtml += `<td style="background:${bg}; color:${textOnSeq(pct)}">${fmtPct(pct)}</td>`;
+    }
+  });
+  matrixHtml += '</tr>';
+});
+matrixHtml += '</tbody>';
+document.getElementById('matrix-channel-age').innerHTML = matrixHtml;
+
+let tableHtml = '<thead><tr><th>Edad</th><th>n</th>' + channels.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+ageOrderFiltered.forEach(age => {
+  const row = DATA.channel_by_age[age];
+  tableHtml += `<tr><td>${age}</td><td>${row.n}</td>` + channels.map(c => `<td>${row.counts[c] || 0}</td>`).join('') + '</tr>';
+});
+tableHtml += '</tbody>';
+document.getElementById('table-channel-age').innerHTML = tableHtml;
+
+// ---------- NPS BY WITH WHOM (stacked bars) ----------
+const npsWithGroups = DATA.with_fixed_order
+  .map(g => ({ label: g, ...DATA.nps_by_with[g] }))
+  .filter(g => g.n > 0)
+  .sort((a,b) => b.nps_score - a.nps_score);
+
+document.getElementById('stacks-nps-with').innerHTML = npsWithGroups.map(g => {
+  const lowN = g.n < 15;
+  return `
+  <div class="stack-row">
+    <div class="top-line">
+      <div class="grp">${g.label}<span class="n-note">n=${g.n}${lowN ? ' · muestra pequeña' : ''}</span></div>
+      <div class="score">NPS <b>${fmt1(g.nps_score)}</b></div>
+    </div>
+    <div class="stack-track">
+      <div class="stack-seg ${g.promoters_pct < 8 ? 'tiny' : ''}" style="width:${g.promoters_pct}%; background:var(--good);">${fmtPct(g.promoters_pct)}</div>
+      <div class="stack-seg ${g.passives_pct < 8 ? 'tiny' : ''}" style="width:${g.passives_pct}%; background:var(--text-muted);">${fmtPct(g.passives_pct)}</div>
+      <div class="stack-seg ${g.detractors_pct < 8 ? 'tiny' : ''}" style="width:${g.detractors_pct}%; background:var(--critical);">${fmtPct(g.detractors_pct)}</div>
+    </div>
+  </div>`;
+}).join('') + `
+  <div class="legend-list" style="flex-direction:row; gap:18px; margin-top:6px; flex-wrap:wrap;">
+    <div class="legend-item"><span class="sw" style="background:var(--good)"></span>Promotores</div>
+    <div class="legend-item"><span class="sw" style="background:var(--text-muted)"></span>Pasivos</div>
+    <div class="legend-item"><span class="sw" style="background:var(--critical)"></span>Detractores</div>
+  </div>`;
+
+// ---------- VALUE FOR MONEY BY WITH WHOM (diverging stacked) ----------
+const divColors = { '1': 'var(--critical)', '2': 'var(--serious)', '3': 'var(--baseline)', '4': '#8fd48f', '5': 'var(--good)' };
+const valueWithGroups = DATA.with_fixed_order
+  .map(g => ({ label: g, ...DATA.value_by_with[g] }))
+  .filter(g => g.n > 0)
+  .sort((a,b) => b.mean - a.mean);
+
+document.getElementById('stacks-value-with').innerHTML = valueWithGroups.map(g => {
+  const total = g.n;
+  const lowN = g.n < 15;
+  const segs = ['1','2','3','4','5'].map(k => {
+    const pct = (g.distribution[k] / total) * 100;
+    return `<div class="div-seg" style="width:${pct}%; background:${divColors[k]}; color:${(k==='3')?'var(--text-primary)':'#fff'}">${pct >= 9 ? fmtPct(pct) : ''}</div>`;
+  }).join('');
+  return `
+  <div class="stack-row">
+    <div class="top-line">
+      <div class="grp">${g.label}<span class="n-note">n=${g.n}${lowN ? ' · muestra pequeña' : ''}</span></div>
+      <div class="score">Media <b>${fmt1(g.mean)}</b> / 5 · Top-2 <b>${fmtPct(g.top2box_pct)}</b></div>
+    </div>
+    <div class="div-track">${segs}</div>
+  </div>`;
+}).join('') + `
+  <div class="legend-list" style="flex-direction:row; gap:14px; margin-top:6px; flex-wrap:wrap;">
+    <div class="legend-item"><span class="sw" style="background:var(--critical)"></span>1</div>
+    <div class="legend-item"><span class="sw" style="background:var(--serious)"></span>2</div>
+    <div class="legend-item"><span class="sw" style="background:var(--baseline)"></span>3</div>
+    <div class="legend-item"><span class="sw" style="background:#8fd48f"></span>4</div>
+    <div class="legend-item"><span class="sw" style="background:var(--good)"></span>5</div>
+  </div>`;
+
+// ---------- THEMATIC SUMMARIES ----------
+document.getElementById('liked-n').textContent = 'n=' + THEMES.liked_n + ' comentarios';
+document.getElementById('improve-n').textContent = 'n=' + THEMES.improve_n + ' comentarios';
+
+function renderThemeCards(containerId, themes, totalN) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = themes.map(t => {
+    const pct = Math.round(100 * t.count / totalN);
+    return `
+    <div class="theme-card">
+      <div class="t-head">
+        <div class="t-name">${t.name}</div>
+        <div class="t-pct">${pct}% <span style="color:var(--text-muted); font-weight:400;">(n=${t.count})</span></div>
+      </div>
+      <div class="t-track"><div class="t-fill" style="width:${pct}%;"></div></div>
+      ${t.quotes.map(q => `<div class="quote">“${q}”</div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+renderThemeCards('themes-liked', THEMES.liked, THEMES.liked_n);
+renderThemeCards('themes-improve', THEMES.improve, THEMES.improve_n);
+</script>
+</body>
+</html>
